@@ -23,7 +23,7 @@
       border-radius: 16px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       padding: 2rem;
-      max-width: 600px;
+      max-width: 700px;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -90,23 +90,33 @@
       font-size: 1.2rem;
       color: gold;
     }
-    .style-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    .style-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
       margin-bottom: 1rem;
     }
-    .style-buttons button {
-      background-color: #f0f0f0;
-      color: #333;
-      border: 1px solid #ccc;
-      font-size: 0.9rem;
-      border-radius: 999px;
-      padding: 0.3rem 0.8rem;
+    .style-item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: center;
       cursor: pointer;
+      transition: box-shadow 0.3s;
     }
-    .style-buttons button:hover {
-      background-color: #e0e0e0;
+    .style-item:hover {
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+    .style-item img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+    }
+    .style-item span {
+      display: block;
+      padding: 0.5rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -117,12 +127,27 @@
       <label for="prompt">请输入菜名 + 摆盘风格（如：红烧牛肉+日式精致）</label>
       <input type="text" id="prompt" placeholder="例如：番茄炒蛋+未来主义摆盘" />
     </div>
-    <div class="style-buttons">
-      <button onclick="fillPrompt('日式极简')">🍱 日式极简</button>
-      <button onclick="fillPrompt('中国禅意')">🌿 中国禅意</button>
-      <button onclick="fillPrompt('未来主义')">🌌 未来主义</button>
-      <button onclick="fillPrompt('艺术装置风')">🎨 艺术装置风</button>
-      <button onclick="fillPrompt('分子料理')">🧑‍🍳 分子料理</button>
+    <div class="style-gallery">
+      <div class="style-item" onclick="fillPrompt('日式极简')">
+        <img src="https://source.unsplash.com/120x80/?japanese,food" />
+        <span>🍱 日式极简</span>
+      </div>
+      <div class="style-item" onclick="fillPrompt('中国禅意')">
+        <img src="https://source.unsplash.com/120x80/?zen,food" />
+        <span>🌿 中国禅意</span>
+      </div>
+      <div class="style-item" onclick="fillPrompt('未来主义')">
+        <img src="https://source.unsplash.com/120x80/?futuristic,food" />
+        <span>🌌 未来主义</span>
+      </div>
+      <div class="style-item" onclick="fillPrompt('艺术装置风')">
+        <img src="https://source.unsplash.com/120x80/?artistic,food" />
+        <span>🎨 艺术装置风</span>
+      </div>
+      <div class="style-item" onclick="fillPrompt('分子料理')">
+        <img src="https://source.unsplash.com/120x80/?molecular,gastronomy" />
+        <span>🧑‍🍳 分子料理</span>
+      </div>
     </div>
     <button onclick="generateImage()">生成图像</button>
     <div id="status" class="loading"></div>

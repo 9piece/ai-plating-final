@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AI 摆盘图生成</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; max-width: 600px; margin: auto; }
+    label, input, button { display: block; margin-bottom: 16px; width: 100%; }
+    img { max-width: 100%; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>AI 摆盘图生成</h1>
+  <label for="prompt">请输入菜名 + 风格描述：</label>
+  <input id="prompt" placeholder="例如：红烧牛肉 + 日式摆盘" />
+  <button onclick="generate()">生成图像</button>
+  <p id="status"></p>
+  <img id="result" />
+  <script>
+    async function generate() {
+      const prompt = document.getElementById("prompt").value;
+      const status = document.getElementById("status");
+      const result = document.getElementById("result");
+      status.textContent = "生成中...";
+      result.src = "";
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      if (data.image) {
+        result.src = data.image;
+        status.textContent = "生成完成：";
+      } else {
+        status.textContent = "生成失败：" + (data.error || "未知错误");
+      }
+    }
+  </script>
+</body>
+</html>

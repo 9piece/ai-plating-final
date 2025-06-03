@@ -6,29 +6,22 @@ export default async function handler(req, res) {
   const { prompt } = req.body;
 
   try {
-    const response = await fetch("https://ark.cn-beijing.volces.com/api/v3/chat/completions", {
+    const response = await fetch("https://ark.cn-beijing.volces.com/api/v3/images/generations", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer 0bce1539-21ee-486d-acdd-95ecc559e984"
       },
       body: JSON.stringify({
-        model: "ep-20250603185353-xr5tb",
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: prompt }
-            ]
-          }
-        ]
+        model: "ep-20250603194600-lxnmn",
+        prompt: prompt,
+        n: 1,
+        size: "1024x1024"
       })
     });
 
     const data = await response.json();
-
-    const imageContent = data.choices?.[0]?.message?.content;
-    const imageUrl = imageContent?.find?.(item => item.type === "image_url")?.image_url?.url;
+    const imageUrl = data?.data?.[0]?.url;
 
     if (imageUrl) {
       res.status(200).json({ image: imageUrl });

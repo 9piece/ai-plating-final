@@ -90,6 +90,24 @@
       font-size: 1.2rem;
       color: gold;
     }
+    .style-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .style-buttons button {
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+    }
+    .style-buttons button:hover {
+      background-color: #e0e0e0;
+    }
   </style>
 </head>
 <body>
@@ -99,26 +117,47 @@
       <label for="prompt">请输入菜名 + 摆盘风格（如：红烧牛肉+日式精致）</label>
       <input type="text" id="prompt" placeholder="例如：番茄炒蛋+未来主义摆盘" />
     </div>
+    <div class="style-buttons">
+      <button onclick="fillPrompt('日式极简')">🍱 日式极简</button>
+      <button onclick="fillPrompt('中国禅意')">🌿 中国禅意</button>
+      <button onclick="fillPrompt('未来主义')">🌌 未来主义</button>
+      <button onclick="fillPrompt('艺术装置风')">🎨 艺术装置风</button>
+      <button onclick="fillPrompt('分子料理')">🧑‍🍳 分子料理</button>
+    </div>
     <button onclick="generateImage()">生成图像</button>
     <div id="status" class="loading"></div>
     <div class="image-result" id="result"></div>
   </div>
   <script>
+    function fillPrompt(style) {
+      const input = document.getElementById("prompt");
+      const base = input.value.split("+")[0] || "红烧牛肉";
+      input.value = `${base}+${style}`;
+    }
+
     async function generateImage() {
       const prompt = document.getElementById("prompt").value;
       const status = document.getElementById("status");
       const result = document.getElementById("result");
-      status.textContent = "生成中...";
+      status.textContent = "正在扩写提示词...";
       result.innerHTML = "";
+
       try {
-        const response = await fetch("/api/generate", {
+        const expandedRes = await fetch("/api/expand", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt })
         });
-        const data = await response.json();
+        const expandedData = await expandedRes.json();
+        const fullPrompt = expandedData.prompt;
+        status.textContent = "正在生成图像...";
+
+        const genRes = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: fullPrompt })
+        });
+        const data = await genRes.json();
         if (data.image) {
           status.textContent = "生成完成：";
           result.innerHTML = `
